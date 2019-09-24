@@ -82,6 +82,8 @@ write.csv(new_sarah_data,"sarah_tidy.csv")
 sarah_data <- read.csv("sarah_tidy.csv", header = T)
 
 sarah_data <- sarah_data[,-1]
+
+library(tidyverse)
 ```
 
 
@@ -100,7 +102,7 @@ class(sarah_data$Gloss)
 
 sarah_data$Gloss <- as.character(sarah_data$Gloss)
 
-class(sarah_data$Date)
+class(sarah_data$Date) 
 
 sarah_data$Date <- anytime::anydate(sarah_data$Date)
 
@@ -149,7 +151,10 @@ Each cell in the cleaned text column corresponds to an utterance. So for each da
 
 3.1) The function "stri_count_words" from the package "stringi" does excatly what you would expect it to do. First install/load "stringi". Secondly, create a new column using "stri_count_words" to count the number of words in each utterance. 
 ```{R} 
+library(stringi)
 
+?stri_count_words
+sarah_clean$count_words <- stri_count_words(sarah_clean$Gloss)
 ```
 
 
@@ -159,6 +164,7 @@ By using group_by(Speaker) on our dataframe the computer will know that further 
 
 3.3)Use group_by to create a new data frame. You should give three arguments to group_by: your dataframe, Speaker and Date.
 ```{R}
+group <- group_by(sarah_clean, Speaker, Date)
 
 ```
 Group_by doesn't change anything about the data, its effect is first visible when we apply further functions (if we wanted to apply functions to the full data frame again grouping can be removed with ungroup())
@@ -177,16 +183,14 @@ I have already given you the structure of how summarise can used to create a new
 hint. each row corresponds to a single utterance. Roughly speaking, the function n() calculates the number of rows that went into the calculation, so you can use n() to calculate the number of utterances (the function doesn't take any arguments)
 ```{R}
 
-mlu_df <- summarise("grouped_dataframe", word_sum = "function"("variable"),
-                                         utterances = "function"("variable"),
-                                         mlu =  "sum of words"/ "number of utterances")
-
+mlu_df <- summarise(group, word_sum = sum(count_words), utterances = n(), mlu =  word_sum/utterances)
 
 ```  
 4.5) View the data frame, click on "Date" to sort by it and see if child and mother each have a MLU value for each date
 
 4.6) Lastly, remember to save the data
 ```{R}
+
 ```
 
 If everything worked out as it should then you should now have a nifty data frame with MLUs for child and mother for each date. What a day!
