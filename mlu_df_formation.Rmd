@@ -190,7 +190,7 @@ mlu_df <- summarise(group, word_sum = sum(count_words), utterances = n(), mlu = 
 
 4.6) Lastly, remember to save the data
 ```{R}
-
+write.csv(mlu_df,"mlu_df.csv")
 ```
 
 If everything worked out as it should then you should now have a nifty data frame with MLUs for child and mother for each date. What a day!
